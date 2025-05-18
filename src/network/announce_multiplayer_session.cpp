@@ -15,6 +15,10 @@
 #include "web_service/announce_room_json.h"
 #endif
 
+#ifdef ENABLE_UPNP
+#include "network/upnp_manager.h"
+#endif
+
 namespace Network {
 
 // Time between room is announced to web_service
@@ -47,9 +51,9 @@ Common::WebResult AnnounceMultiplayerSession::Register() {
     if (Upnp::MapPort(port, "Azahar 3DS Room")) {
         // UPnP mapping succeeded, retrieve external IP for UI or logs
         std::string extIP = Upnp::GetExternalIPAddress();
-        LOG_INFO(Network, "UPnP mapped port " << port << " -> external " << extIP);
+        LOG_INFO(Network, "UPnP mapped port {} -> external {}", port, extIP);
     } else {
-        LOG_WARN(Network, "UPnP mapping failed, client must forward port " << port << " manually");
+        LOG_WARN(Network, "UPnP mapping failed, client must forward port {} manually", port);
     }
 #endif
 

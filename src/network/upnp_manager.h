@@ -22,16 +22,6 @@ std::string GetExternalIPAddress();
 void Shutdown();
 
 }  // namespace Upnp
-#else
-
-// Stubs when UPnP is disabled:
-namespace Upnp {
-inline bool Initialize() { return false; }
-inline bool MapPort(int) { return false; }
-inline bool UnmapPort(int) { return false; }
-inline std::string GetExternalIPAddress() { return {}; }
-inline void Shutdown() {}
-}  // namespace Upnp
 #endif
 
 #endif // UPNP_MANAGER_H
