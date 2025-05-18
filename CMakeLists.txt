@@ -90,6 +90,7 @@ CMAKE_DEPENDENT_OPTION(ENABLE_ROOM "Enable dedicated room functionality" ON "NOT
 CMAKE_DEPENDENT_OPTION(ENABLE_ROOM_STANDALONE "Enable generating a standalone dedicated room executable" ON "ENABLE_ROOM" OFF)
 
 option(ENABLE_WEB_SERVICE "Enable web services (telemetry, etc.)" ON)
+option(ENABLE_UPNP "Enable Universal Plug and Play for Rooms" ON)
 option(ENABLE_SCRIPTING "Enable RPC server for scripting" ON)
 
 CMAKE_DEPENDENT_OPTION(ENABLE_CUBEB "Enables the cubeb audio backend" ON "NOT IOS" OFF)
