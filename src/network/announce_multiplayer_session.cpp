@@ -21,6 +21,9 @@ namespace Network {
 static constexpr std::chrono::seconds announce_time_interval(15);
 
 AnnounceMultiplayerSession::AnnounceMultiplayerSession() {
+#ifdef ENABLE_UPNP
+    Upnp::Initialize();
+#endif
 #ifdef ENABLE_WEB_SERVICE
     backend = std::make_unique<WebService::RoomJson>(NetSettings::values.web_api_url,
                                                      NetSettings::values.citra_username,
@@ -31,22 +34,34 @@ AnnounceMultiplayerSession::AnnounceMultiplayerSession() {
 }
 
 Common::WebResult AnnounceMultiplayerSession::Register() {
-    std::shared_ptr<Network::Room> room = Network::GetRoom().lock();
+    auto room = Network::GetRoom().lock();
     if (!room) {
-        return Common::WebResult{Common::WebResult::Code::LibError, "Network is not initialized"};
+        return {Common::WebResult::Code::LibError, "Network is not initialized"};
     }
     if (room->GetState() != Network::Room::State::Open) {
-        return Common::WebResult{Common::WebResult::Code::LibError, "Room is not open"};
+        return {Common::WebResult::Code::LibError, "Room is not open"};
     }
+
+#ifdef ENABLE_UPNP
+    int port = room->GetRoomInformation().port;
+    if (Upnp::MapPort(port, "Azahar 3DS Room")) {
+        // UPnP mapping succeeded, retrieve external IP for UI or logs
+        std::string extIP = Upnp::GetExternalIPAddress();
+        LOG_INFO(Network, "UPnP mapped port " << port << " -> external " << extIP);
+    } else {
+        LOG_WARN(Network, "UPnP mapping failed, client must forward port " << port << " manually");
+    }
+#endif
+
     UpdateBackendData(room);
-    Common::WebResult result = backend->Register();
+    auto result = backend->Register();
     if (result.result_code != Common::WebResult::Code::Success) {
         return result;
     }
     LOG_INFO(WebService, "Room has been registered");
     room->SetVerifyUID(result.returned_data);
     registered = true;
-    return Common::WebResult{Common::WebResult::Code::Success};
+    return {Common::WebResult::Code::Success};
 }
 
 void AnnounceMultiplayerSession::Start() {
@@ -65,6 +80,14 @@ void AnnounceMultiplayerSession::Stop() {
         announce_multiplayer_thread.reset();
         backend->Delete();
         registered = false;
+#ifdef ENABLE_UPNP
+        auto room = Network::GetRoom().lock();
+        if (room) {
+            int port = room->GetRoomInformation().port;
+            Upnp::UnmapPort(port);
+        }
+        Upnp::Shutdown();
+#endif
     }
 }
 
