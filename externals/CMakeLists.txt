@@ -379,13 +379,6 @@ if (ENABLE_OPENGL)
     add_subdirectory(glad)
 endif()
 
-if(ENABLE_UPNP)
-    add_subdirectory(miniupnp/miniupnpc EXCLUDE_FROM_ALL)
-
-    add_library(miniupnp INTERFACE)
-    target_link_libraries(miniupnp INTERFACE miniupnpc)
-endif()
-
 # Vulkan dependencies
 if (ENABLE_VULKAN)
     # glslang

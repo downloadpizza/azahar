@@ -1,9 +1,7 @@
-#ifndef UPNP_MANAGER_H
-#define UPNP_MANAGER_H
+#pragma once
 
 #include <string>
 
-#ifdef ENABLE_UPNP
 namespace Upnp {
 
 // Initializes the UPnP subsystem. Returns true on success.
@@ -21,7 +19,4 @@ std::string GetExternalIPAddress();
 // Performs any needed cleanup of UPnP resources.
 void Shutdown();
 
-}  // namespace Upnp
-#endif
-
-#endif // UPNP_MANAGER_H
+}

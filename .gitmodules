@@ -97,6 +97,3 @@
 [submodule "miniupnp"]
 	path = externals/miniupnp
 	url = https://github.com/miniupnp/miniupnp.git
-[submodule "externals/miniupnp"]
-	path = externals/miniupnp
-	url = https://github.com/miniupnp/miniupnp.git

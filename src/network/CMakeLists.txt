@@ -27,6 +27,16 @@ if (ENABLE_WEB_SERVICE)
     target_link_libraries(network PRIVATE web_service)
 endif()
 
+if(ENABLE_UPNP)
+  target_sources(network PRIVATE upnp_manager.cpp)
+
+  add_subdirectory(${CMAKE_SOURCE_DIR}/externals/miniupnp/miniupnpc EXCLUDE_FROM_ALL)
+
+  target_include_directories(network PRIVATE ${CMAKE_SOURCE_DIR}/externals/miniupnp/miniupnpc/include)
+
+  target_link_libraries(network PRIVATE miniupnpc)
+endif()
+
 target_link_libraries(network PRIVATE citra_common enet Boost::serialization httplib)
 
 if (CITRA_USE_PRECOMPILED_HEADERS)

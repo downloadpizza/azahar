@@ -1,0 +1,23 @@
+
+services:
+  msys2-build:
+    image: msys2/msys2:latest
+    working_dir: /src
+    volumes:
+      - ./:/src:cached
+    environment:
+      CCACHE_DIR: /src/.ccache
+    command: |
+      bash -lc '
+        pacman -Sy --noconfirm --needed \
+          git make p7zip mingw-w64-x86_64-toolchain \
+          ccache cmake ninja \
+          qt6-base qt6-multimedia qt6-tools qt6-translations \
+        && cd /src \
+        && mkdir -p .ccache \
+        && export CCACHE_DIR=/src/.ccache \
+        && ./.ci/windows.sh
+      '
+    # Ensure exit code propagates
+    tty: true
+    stdin_open: true

@@ -8,6 +8,7 @@
 #include "announce_multiplayer_session.h"
 #include "common/announce_multiplayer_room.h"
 #include "common/assert.h"
+#include "common/logging/log.h"
 #include "network/network.h"
 #include "network/network_settings.h"
 
@@ -51,9 +52,9 @@ Common::WebResult AnnounceMultiplayerSession::Register() {
     if (Upnp::MapPort(port, "Azahar 3DS Room")) {
         // UPnP mapping succeeded, retrieve external IP for UI or logs
         std::string extIP = Upnp::GetExternalIPAddress();
-        LOG_INFO(Network, "UPnP mapped port {} -> external {}", port, extIP);
+        LOG_INFO(UPnP, "UPnP mapped port {} -> external {}", port, extIP);
     } else {
-        LOG_WARN(Network, "UPnP mapping failed, client must forward port {} manually", port);
+        LOG_WARNING(UPnP, "UPnP mapping failed, client must forward port {} manually", port);
     }
 #endif
 

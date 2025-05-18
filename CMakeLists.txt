@@ -126,6 +126,9 @@ endif()
 if (ENABLE_SDL2_FRONTEND)
     add_definitions(-DENABLE_SDL2_FRONTEND)
 endif()
+if(ENABLE_UPNP)
+    add_compile_definitions(ENABLE_UPNP)
+endif()
 
 include(CitraHandleSystemLibs)
 
